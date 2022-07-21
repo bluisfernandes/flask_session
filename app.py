@@ -1,12 +1,9 @@
 from flask import Flask, session, request, url_for, redirect
-# import secrets
-
+import os
+import secrets
 
 app = Flask(__name__)
-# app.secret_key = secrets.token_hex()
-app.secret_key = 'hagsjdNCNJSHC_1'
-
-mc = dict()
+app.secret_key = os.getenv('SECRET_KEY', secrets.token_urlsafe())
 
 @app.route('/')
 def index():
@@ -14,7 +11,7 @@ def index():
         return f'Logged in as {session["username"]}'
     return f"You are not logged in <a href={url_for('login')}>Login</a>"
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         session['username'] = request.form['username']
@@ -26,7 +23,7 @@ def login():
         </form>
     '''
 
-@app.route('/logout')
+@app.route('/logout/')
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
