@@ -1,9 +1,10 @@
 from flask import Flask, session, request, url_for, redirect
-import secrets
+# import secrets
 
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex()
+# app.secret_key = secrets.token_hex()
+app.secret_key = 'hagsjdNCNJSHC_1'
 
 mc = dict()
 
