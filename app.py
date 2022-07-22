@@ -26,11 +26,19 @@ def login():
         </form>
     '''
 
-@app.route('/logout/')
+@app.route('/logouta/123')
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('index'))
+
+
+@app.route('/help/')
+def help():
+    # Show a list of site routs
+    links = [link.rule for link in app.url_map.iter_rules()]
+    text = '<br>'.join(links)
+    return f'{text}'
 
 if __name__ == "__main__":
     app.run()
