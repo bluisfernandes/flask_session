@@ -26,14 +26,33 @@ def login():
         </form>
     '''
 
-@app.route('/logouta/123')
+@app.route('/logout/')
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('index'))
 
 
-@app.route('/help/')
+@app.route('/escape')
+def try_escape():
+    return ''' 
+          /escape/some_value <br>
+          /noescape/same_value <br>
+            <br>
+          script alert("bad") /script
+            '''
+
+@app.route('/noescape/<value>')
+def no_escape(value):
+    return f'Hello, {value}'
+
+
+@app.route('/escape/<value>')
+def with_escape(value):
+    return f'Hello, {value}'
+
+
+@app.route('/help')
 def help():
     # Show a list of site routs
     links = [link.rule for link in app.url_map.iter_rules()]
