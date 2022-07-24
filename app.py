@@ -1,4 +1,4 @@
-from flask import Flask, session, request, url_for, redirect
+from flask import Flask, session, request, url_for, redirect, render_template
 import os
 import secrets
 from dotenv import load_dotenv
@@ -11,8 +11,16 @@ app.secret_key = os.getenv('SECRET_KEY', secrets.token_urlsafe())
 @app.route('/')
 def index():
     if 'username' in session:
-        return f'Logged in as {session["username"]} <p><a href={url_for("logout")}>Logout</a></p>'
-    return f"You are not logged in <a href={url_for('login')}>Login</a>"
+        return f'''
+                Logged in as {session["username"]} 
+                <p><a href={url_for("logout")}>Logout</a></p>
+                <p><a href={url_for("help")}>List of links</a></p>
+                
+                '''
+    return f'''
+            You are not logged in <a href={url_for('login')}>Login</a>"
+            <p><a href={url_for('help')}>List of links</a></p>
+            '''
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -51,8 +59,11 @@ def no_escape(value):
 def with_escape(value):
     return f'Hello, {value}'
 
+@app.route('/template/')
+def template():
+    return render_template('index.html', name='name_here')
 
-@app.route('/help')
+@app.route('/help/')
 def help():
     # Show a list of site routs
     links = [link.rule for link in app.url_map.iter_rules()]
