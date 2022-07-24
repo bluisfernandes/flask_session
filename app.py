@@ -1,4 +1,4 @@
-from flask import Flask, session, request, url_for, redirect, render_template
+from flask import Flask, session, request, url_for, redirect, render_template, flash
 import os
 import secrets
 from dotenv import load_dotenv
@@ -18,7 +18,7 @@ def index():
                 
                 '''
     return f'''
-            You are not logged in <a href={url_for('login')}>Login</a>"
+            You are not logged in <a href={url_for('login')}>Login</a>
             <p><a href={url_for('help')}>List of links</a></p>
             '''
 
@@ -26,7 +26,8 @@ def index():
 def login():
     if request.method == 'POST':
         session['username'] = request.form['username']
-        return redirect(url_for('index'))
+        flash('You were successfully logged in')
+        return render_template('index.html', name=session['username'])
     return '''
         <form method="post">
             <p><input type=text name=username>
