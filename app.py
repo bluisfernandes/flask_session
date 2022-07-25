@@ -2,6 +2,7 @@ from flask import Flask, session, request, url_for, redirect, render_template, f
 import os
 import secrets
 from dotenv import load_dotenv
+from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
 from helpers import apology, login_required, lookup, usd
 
@@ -67,6 +68,17 @@ def help():
     links = [link.rule for link in app.url_map.iter_rules()]
     text = '<br>'.join(links)
     return f'{text}'
+
+def errorhandler(e):
+    '''Handle error'''
+    if not isinstance(e, HTTPException):
+        e = InternalServerError()
+    return apology(e.name, e.code)
+ 
+ 
+ # Listen for errors
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__":
     app.run()
