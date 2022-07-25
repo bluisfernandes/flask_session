@@ -18,11 +18,9 @@ app.jinja_env.filters["usd"] = usd
 def index():
     if 'username' in session:
         return render_template("index.html")
+    else:
+        return render_template("index.html")
 
-    return f'''
-            You are not logged in <a href={url_for('login')}>Login</a>
-            <p><a href={url_for('help')}>List of links</a></p>
-            '''
 
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
@@ -76,12 +74,11 @@ def with_escape(value):
 def template():
     return render_template('index.html', name='name_here')
 
-@app.route('/help/')
-def help():
+@app.route('/routes/')
+def routes():
     # Show a list of site routs
     links = [link.rule for link in app.url_map.iter_rules()]
-    text = '<br>'.join(links)
-    return f'{text}'
+    return render_template('routes.html', links=links)
 
 def errorhandler(e):
     '''Handle error'''

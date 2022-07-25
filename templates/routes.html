@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+
+    {% if session.username is defined %}
+    <p>You're logged as <b>{{ session.username }}</b></p>
+
+    {% else %}
+    <h5>Please <a href="/login">Login in</a></h5>
+
+    {% endif %}
+    
+    
+    {% for link in links %}
+    <p><a href='{{ link  }}'>{{ link }}</a></p>
+                
+    
+    {% endfor %}
+    
+
+{% endblock %}
