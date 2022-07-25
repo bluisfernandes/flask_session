@@ -78,7 +78,7 @@ def template():
 def routes():
     # Show a list of site routs
     links = [link.rule for link in app.url_map.iter_rules()]
-    return render_template('routes.html', links=links)
+    return render_template('routes.html', links=sorted(links))
 
 def errorhandler(e):
     '''Handle error'''
