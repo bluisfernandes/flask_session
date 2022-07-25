@@ -3,20 +3,21 @@ import os
 import secrets
 from dotenv import load_dotenv
 
+from helpers import apology, login_required, lookup, usd
+
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', secrets.token_urlsafe())
+ # Custom filter
+app.jinja_env.filters["usd"] = usd
+
 
 @app.route('/')
 def index():
     if 'username' in session:
-        return f'''
-                Logged in as {session["username"]} 
-                <p><a href={url_for("logout")}>Logout</a></p>
-                <p><a href={url_for("help")}>List of links</a></p>
-                
-                '''
+        return render_template("index.html")
+
     return f'''
             You are not logged in <a href={url_for('login')}>Login</a>
             <p><a href={url_for('help')}>List of links</a></p>
@@ -27,13 +28,9 @@ def login():
     if request.method == 'POST':
         session['username'] = request.form['username']
         flash('You were successfully logged in')
-        return render_template('index.html', name=session['username'])
-    return '''
-        <form method="post">
-            <p><input type=text name=username>
-            <p><input type=submit value=Login>
-        </form>
-    '''
+        # return render_template('index.html', name=session['username'])
+        return render_template("index.html")
+    return render_template('login.html')
 
 @app.route('/logout/')
 def logout():

@@ -1,30 +1,72 @@
-<!doctype html>
-<html dir="ltr" lang="en">
+{% extends "layout.html" %}
 
-<head>
-  <meta charset="utf-8">
-  <title>Sessions</title>
-  <style>
-  </style>
-</head>
+{% block title %}
+    Index
+{% endblock %}
 
-<body>
+{% block main %}
 
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul class=flashes>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
-  {% block body %}{% endblock %}
+    {% if session is defined %}
 
-  <p>Hello hello</p>
-  <p>{{ name }}</p>
+    <p>wellcome <b>{{ session.username }}</b></p>
 
+    <div class="table-responsive-sm"> 
+        <table class="table caption-top table-striped table-sm">
+            <caption>wallet</caption>
+            <thead>
+                <tr>
+                    <th >symbol</th>
+                    <th>name</th>
+                    <th>shares</th>
+                    <th class="text-end">price</th>
+                    <th class="text-end">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            {% for i in wallet %}
+                <tr>
+                    <td>{{ i.symbol }}</td>
+                    <td>{{ i.name }}</td>
+                    <td>{{ i.shares }}</td>
+                    <td class="text-end">{{ i.price }}</td>
+                    <td class="text-end" >{{ (i.shares * i.price )  }}</td>
+                    
+                </tr>
+            
+    
+            {% endfor %}
+            </tbody>
+            
+            <tfoot class="table-borderless">
+                <tr>
+                    <td class="text-end" colspan="4">Cash</td>
+                    <td class="text-end">{{ session.cash }}</td>
+                </tr>
+    
+            
+                <tr>
+                    <th class="text-end" scope="row" colspan="4">Total</td>
+                    <th class="text-end" scope="row" class="table-active">{{ total }}</td>
+                    
+                </tr>
+            </tfoot>
+    
+        </table>
+    </div>
+    
+    <form action="/cash" method= "post">
+        <div class="form-group">
+            <input autocomplete="off" autofocus class="form-control" placeholder="+/- cash" name="value" type="number">
+            <button class="btn btn-primary" type="submit">Apply</button>
+        </div>
+    </form>
+    
+    {% else %}
+        <h5>Please <a href="/login">Login in</a></h5>
+    {% endif %}
+    
+    
+    
 
-</body>
-
-</html>
+{% endblock %}
