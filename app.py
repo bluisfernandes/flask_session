@@ -40,6 +40,20 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/register/', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        flash("Please login TODO")
+        return redirect(url_for('index'))
+    else:
+        if session:
+            flash("You're already registred")
+            return redirect(url_for('index'))
+        else:
+            return render_template('register.html')
+
+
+
 @app.route('/escape')
 def try_escape():
     return ''' 
