@@ -24,13 +24,13 @@
             </thead>
             <tbody>
                 
-            {% for i in wallet %}
+            {% for user in users %}
                 <tr>
-                    <td>{{ i.symbol }}</td>
-                    <td>{{ i.name }}</td>
-                    <td>{{ i.shares }}</td>
-                    <td class="text-end">{{ i.price }}</td>
-                    <td class="text-end" >{{ (i.shares * i.price )  }}</td>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.category }}</td>
+                    <td class="text-end">{{ user.id }}</td>
+                    <td class="text-end" >{{ (user.id )  }}</td>
                     
                 </tr>
             
