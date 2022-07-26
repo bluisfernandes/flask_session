@@ -82,6 +82,7 @@ def register():
             return render_template('register.html')
 
 @app.route('/users/')
+@login_required
 def table():
     return render_template('users.html',
             users=User.query.order_by(User.id).limit(20).all()
