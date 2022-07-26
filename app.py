@@ -82,9 +82,9 @@ def register():
 
 @app.route('/users/')
 def table():
-    return render_template('table.html',
+    return render_template('users.html',
             users=User.query.order_by(User.id).limit(20).all()
-            )
+    )
 
 
 @app.route('/routes/')
