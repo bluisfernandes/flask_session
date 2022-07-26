@@ -80,7 +80,7 @@ def register():
         else:
             return render_template('register.html')
 
-@app.route('/table/')
+@app.route('/users/')
 def table():
     return render_template('table.html',
             users=User.query.order_by(User.id).limit(20).all()
