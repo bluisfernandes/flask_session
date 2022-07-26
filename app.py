@@ -75,6 +75,10 @@ def with_escape(value):
 def template():
     return render_template('index.html', name='name_here')
 
+@app.route('/table/')
+def table():
+    return render_template('table.html')
+
 @app.route('/routes/')
 def routes():
     # Show a list of site routs
