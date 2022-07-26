@@ -13,6 +13,7 @@ app.secret_key = os.getenv('SECRET_KEY', secrets.token_urlsafe())
  # Custom filter
 app.jinja_env.filters["usd"] = usd
 
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 @app.route('/')
 def index():
