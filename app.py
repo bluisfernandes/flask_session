@@ -23,6 +23,7 @@ app.jinja_env.filters["usd"] = usd
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_USER_URI')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy()
 
