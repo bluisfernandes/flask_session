@@ -62,8 +62,8 @@ def routes():
     links = [link.rule for link in app.url_map.iter_rules()]
     return render_template('routes.html', links=sorted(links))
 
-@login_required
 @app.route('/password/', methods=['POST', 'GET'])
+@login_required
 def password():
     if request.method == 'POST':
         flash('Change password. TODO')
