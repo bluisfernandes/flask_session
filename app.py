@@ -15,6 +15,7 @@ app.jinja_env.filters["usd"] = usd
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
+
 @app.route('/')
 def index():
     if session.get('username', ''):
@@ -38,7 +39,6 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
 
-
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -51,33 +51,10 @@ def register():
         else:
             return render_template('register.html')
 
-
-
-@app.route('/escape')
-def try_escape():
-    return ''' 
-          /escape/some_value <br>
-          /noescape/same_value <br>
-            <br>
-          script alert("bad") /script
-            '''
-
-@app.route('/noescape/<value>')
-def no_escape(value):
-    return f'Hello, {value}'
-
-
-@app.route('/escape/<value>')
-def with_escape(value):
-    return f'Hello, {value}'
-
-@app.route('/template/')
-def template():
-    return render_template('index.html', name='name_here')
-
 @app.route('/table/')
 def table():
     return render_template('table.html')
+
 
 @app.route('/routes/')
 def routes():
@@ -85,13 +62,23 @@ def routes():
     links = [link.rule for link in app.url_map.iter_rules()]
     return render_template('routes.html', links=sorted(links))
 
+@login_required
+@app.route('/password/', methods=['POST', 'GET'])
+def password():
+    if request.method == 'POST':
+        flash('Change password. TODO')
+        return redirect(url_for('index'))
+    else:
+        return render_template('password.html')
+
+
 def errorhandler(e):
     '''Handle error'''
     if not isinstance(e, HTTPException):
         e = InternalServerError()
     return apology(e.name, e.code)
  
- 
+
  # Listen for errors
 for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
