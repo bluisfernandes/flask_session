@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+
+    {% if session.username is defined %}
+
+    <div class="table-responsive-sm"> 
+        <table class="table caption-top table-striped table-sm">
+            <caption>users</caption>
+            <thead>
+                <tr>
+                    <th >id</th>
+                    <th>username</th>
+                    <th>group</th>
+                    <th class="text-end">email</th>
+                    <th class="text-end">password</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.group }}</td>
+                    <td class="text-end">{{ user.email }}</td>
+                    <td class="text-end">{{ user.password }}</td>
+                </tr>
+            
+    
+            {% endfor %}
+            </tbody>
+            
+            <tfoot class="table-borderless">
+                <tr>
+                    <th class="text-end" scope="row" colspan="4">Total users</td>
+                    <th class="text-left" scope="row" class="table-active">{{ users|length  }}</td>
+                    
+                </tr>
+            </tfoot>
+    
+        </table>
+    </div>
+    
+    
+    {% else %}
+        <h5>Please <a href="/login">Login in</a></h5>
+    {% endif %}
+    
+    
+    
+
+{% endblock %}

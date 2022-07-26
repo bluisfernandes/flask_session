@@ -1,4 +1,6 @@
 from flask import Flask, session, request, url_for, redirect, render_template, flash
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import os
 import secrets
 from dotenv import load_dotenv
@@ -8,12 +10,30 @@ from helpers import apology, login_required, lookup, usd
 
 load_dotenv()
 
+
+# Make sure database URI is set
+if not os.environ.get('DATABASE_USER_URI'):
+    raise RuntimeError("DATABASE_USER_URI not set")
+
+
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', secrets.token_urlsafe())
  # Custom filter
 app.jinja_env.filters["usd"] = usd
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_USER_URI')
+
+db = SQLAlchemy()
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.String(80), nullable=False)
+    group = db.Column(db.String(80), nullable=True)
+
+app.db = db.init_app(app)
+Migrate(app, db)
 
 
 @app.route('/')
@@ -42,8 +62,17 @@ def logout():
 @app.route('/register/', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        flash("Please login TODO")
-        return redirect(url_for('index'))
+        form = request.form
+        new_user = User(
+                username = form['username'] ,
+                password = form['password'],
+                group = form['group']
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("Registered")
+        return redirect(url_for('table'))
     else:
         if session:
             flash("You're already registred")
@@ -51,9 +80,11 @@ def register():
         else:
             return render_template('register.html')
 
-@app.route('/table/')
+@app.route('/users/')
 def table():
-    return render_template('table.html')
+    return render_template('users.html',
+            users=User.query.order_by(User.id).limit(20).all()
+    )
 
 
 @app.route('/routes/')
