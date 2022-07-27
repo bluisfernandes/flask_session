@@ -29,11 +29,12 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    group = db.Column(db.String(80), nullable=True)
+    username = db.Column(db.String(20), nullable=False, unique=True)
+    password = db.Column(db.String(60), nullable=False)
+    group = db.Column(db.String(10), nullable=False, default='user')
+    email = db.Column(db.String(40), nullable=False)
 
-Migrate(app, db)
+migrate = Migrate(app, db)
 
 
 @app.route('/')
@@ -66,6 +67,7 @@ def register():
         new_user = User(
                 username = form['username'] ,
                 password = form['password'],
+                email = form['email'],
                 group = form['group']
         )
         db.session.add(new_user)
