@@ -25,7 +25,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_USER_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy()
+db = SQLAlchemy(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,7 +33,6 @@ class User(db.Model):
     password = db.Column(db.String(80), nullable=False)
     group = db.Column(db.String(80), nullable=True)
 
-app.db = db.init_app(app)
 Migrate(app, db)
 
 
@@ -91,7 +90,6 @@ def table():
 @app.route('/account')
 @login_required
 def account():
-    print(session)
     user = User.query.filter_by(username = session['username']).all()
     return render_template('users.html', users=user)
 
