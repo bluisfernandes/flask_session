@@ -88,6 +88,13 @@ def table():
             users=User.query.order_by(User.id).limit(20).all()
     )
 
+@app.route('/account')
+@login_required
+def account():
+    print(session)
+    user = User.query.filter_by(username = session['username']).all()
+    return render_template('users.html', users=user)
+
 
 @app.route('/routes/')
 def routes():
