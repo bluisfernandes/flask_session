@@ -68,7 +68,6 @@ def register():
                 username = form['username'] ,
                 password = form['password'],
                 email = form['email'],
-                group = form['group']
         )
         db.session.add(new_user)
         db.session.commit()
