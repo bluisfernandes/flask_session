@@ -31,6 +31,10 @@
             {{ form.password(class="form-control",  placeholder="password") }}
           {% endif %}
         </div>
+        <div class='form-check'>
+          {{ form.remember(class='form-check-input') }}
+          {{ form.remember.label(class='form-check-label') }}
+        </div>
 
           {{ form.submit(class="btn btn-primary") }}
     </form>
