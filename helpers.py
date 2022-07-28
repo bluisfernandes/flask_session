@@ -1,3 +1,4 @@
+from app import User
 from flask import redirect, render_template, session, flash, url_for
 from functools import wraps
 
@@ -39,7 +40,7 @@ def login_admin_required(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session.get("username") !=  'admin':
+        if User.query.get(session.get("user_id")).group !=  'admin':
             flash('only admin')
             return redirect(url_for('index'))
         return f(*args, **kwargs)

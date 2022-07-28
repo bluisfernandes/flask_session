@@ -7,7 +7,6 @@ import secrets
 from dotenv import load_dotenv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
-from helpers import apology, login_required, login_admin_required, usd
 
 load_dotenv()
 
@@ -20,7 +19,6 @@ if not os.environ.get('DATABASE_USER_URI'):
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', secrets.token_urlsafe())
  # Custom filter
-app.jinja_env.filters["usd"] = usd
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_USER_URI')
@@ -37,6 +35,9 @@ class User(db.Model):
     email = db.Column(db.String(40), nullable=False)
 
 from forms import LoginForm, RegisterForm
+from helpers import apology, login_required, login_admin_required, usd
+
+app.jinja_env.filters["usd"] = usd
 
 migrate = Migrate(app, db)
 
