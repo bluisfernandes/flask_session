@@ -72,8 +72,8 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash("Registered")
-        return redirect(url_for('table'))
+        flash("Registered. Please Login")
+        return redirect(url_for('login'))
     else:
         if session:
             flash("You're already registred")
@@ -83,7 +83,7 @@ def register():
 
 @app.route('/users/')
 @login_admin_required
-def table():
+def users():
     return render_template('users.html',
             users=User.query.order_by(User.id).limit(20).all()
     )
