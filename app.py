@@ -48,6 +48,9 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get('username', ''):
+        flash("You're already logged in", 'warning')
+        return redirect(url_for('index'))
     form = LoginForm()
     print(request.form)
     if form.validate_on_submit():
