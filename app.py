@@ -6,7 +6,6 @@ import secrets
 from dotenv import load_dotenv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
-from forms import LoginForm, RegisterForm
 from helpers import apology, login_required, login_admin_required, usd
 
 load_dotenv()
@@ -34,6 +33,8 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
     group = db.Column(db.String(10), nullable=False, default='user')
     email = db.Column(db.String(40), nullable=False)
+
+from forms import LoginForm, RegisterForm
 
 migrate = Migrate(app, db)
 
@@ -71,11 +72,10 @@ def logout():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        form_request = request.form
         new_user = User(
-                username = form_request['username'] ,
-                password = form_request['password'],
-                email = form_request['email'],
+                username = form.username.data ,
+                password = form.password.data,
+                email = form.email.data,
         )
         db.session.add(new_user)
         db.session.commit()
