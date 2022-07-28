@@ -49,7 +49,6 @@ def login():
         flash("You're already logged in", 'warning')
         return redirect(url_for('index'))
     form = LoginForm()
-    print(request.form)
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user.password == form.password.data:
@@ -71,9 +70,6 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
-    print(request.form)
-    print(request.method)
-    print(form.validate_on_submit())
     if form.validate_on_submit():
         form_request = request.form
         new_user = User(
