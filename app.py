@@ -40,10 +40,7 @@ migrate = Migrate(app, db)
 
 @app.route('/')
 def index():
-    if session.get('username', ''):
-        return render_template("index.html")
-    else:
-        return render_template("index.html")
+    return render_template("index.html")
 
 
 @app.route('/login', methods=['GET', 'POST'])
