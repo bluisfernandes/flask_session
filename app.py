@@ -6,6 +6,7 @@ import secrets
 from dotenv import load_dotenv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
+from forms import LoginForm, RegisterForm
 from helpers import apology, login_required, login_admin_required, usd
 
 load_dotenv()
@@ -54,11 +55,22 @@ def login():
         return render_template("index.html")
     return render_template('login.html')
 
+@app.route('/login2', methods=['GET', 'POST'])
+def login2():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+
 @app.route('/logout/')
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('index'))
+
+
+@app.route('/register2', methods=['GET', 'POST'])
+def register2():
+    form = RegisterForm()
+    return render_template('register.html', form=form)
 
 @app.route('/register/', methods=['GET', 'POST'])
 def register():

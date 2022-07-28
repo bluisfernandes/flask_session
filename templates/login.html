@@ -1,17 +1,16 @@
 {% extends "layout.html" %}
 
-{% block title %}
-    Log Inaaaaa
-{% endblock %}
+{% block title %} Login {% endblock %}
 
 {% block main %}
     <form action="/login" method="post">
+        {{ form.hidden_tag() }}
         <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text">
+          {{ form.email(class="form-control",  placeholder="email") }}
         </div>
         <div class="form-group">
-            <input class="form-control" name="password" placeholder="Password" type="password">
+          {{ form.password(class="form-control",  placeholder="password") }}
         </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
+          {{ form.submit(class="btn btn-primary") }}
     </form>
 {% endblock %}
