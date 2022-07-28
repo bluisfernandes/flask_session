@@ -71,30 +71,18 @@ def register():
     print(request.method)
     print(form.validate_on_submit())
     if form.validate_on_submit():
+        form_request = request.form
+        new_user = User(
+                username = form_request['username'] ,
+                password = form_request['password'],
+                email = form_request['email'],
+        )
+        db.session.add(new_user)
+        db.session.commit()
         flash(f'Registred as {form.username.data}. Please login.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-# @app.route('/register/', methods=['GET', 'POST'])
-# def register():
-    # if request.method == 'POST':
-        # form = request.form
-        # new_user = User(
-                # username = form['username'] ,
-                # password = form['password'],
-                # email = form['email'],
-        # )
-        # db.session.add(new_user)
-        # db.session.commit()
-
-        # flash("Registered. Please Login")
-        # return redirect(url_for('login'))
-    # else:
-        # if session.get('username',''):
-            # flash("You're already registred")
-            # return redirect(url_for('index'))
-        # else:
-            # return render_template('register.html')
 
 @app.route('/users/')
 @login_admin_required
