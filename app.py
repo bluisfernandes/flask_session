@@ -6,7 +6,7 @@ import secrets
 from dotenv import load_dotenv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
-from helpers import apology, login_required, login_admin_required, lookup, usd
+from helpers import apology, login_required, login_admin_required, usd
 
 load_dotenv()
 
