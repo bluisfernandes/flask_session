@@ -1,6 +1,7 @@
 from flask import Flask, session, request, url_for, redirect, render_template, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
 import os
 import secrets
 from dotenv import load_dotenv
@@ -26,6 +27,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_USER_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -52,9 +54,9 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user.password == form.password.data:
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
             session['username'] = user.username
-            session['user_id'] = user.id
+            session['user_id'] = user.id 
             return redirect(url_for('index'))
         flash('user and/or email not found', 'warning')
         return redirect(url_for('login'))
@@ -72,9 +74,10 @@ def logout():
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
+        hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         new_user = User(
                 username = form.username.data ,
-                password = form.password.data,
+                password = hashed_pw,
                 email = form.email.data,
         )
         db.session.add(new_user)
