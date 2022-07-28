@@ -46,19 +46,16 @@ def index():
         return render_template("index.html")
 
 
-@app.route('/login/', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        session['username'] = request.form['username']
-        flash('You were successfully logged in')
-        # return render_template('index.html', name=session['username'])
-        return render_template("index.html")
-    return render_template('login.html')
-
-@app.route('/login2', methods=['GET', 'POST'])
-def login2():
     form = LoginForm()
+    print(request.form)
+    if form.validate_on_submit():
+        session['username'] = request.form['email']
+        flash('ok', 'success')
+        return redirect(url_for('index'))
     return render_template('login.html', form=form)
+
 
 @app.route('/logout/')
 def logout():
@@ -67,31 +64,37 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/register2', methods=['GET', 'POST'])
-def register2():
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     form = RegisterForm()
+    print(request.form)
+    print(request.method)
+    print(form.validate_on_submit())
+    if form.validate_on_submit():
+        flash(f'Registred as {form.username.data}. Please login.', 'success')
+        return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
-@app.route('/register/', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        form = request.form
-        new_user = User(
-                username = form['username'] ,
-                password = form['password'],
-                email = form['email'],
-        )
-        db.session.add(new_user)
-        db.session.commit()
+# @app.route('/register/', methods=['GET', 'POST'])
+# def register():
+    # if request.method == 'POST':
+        # form = request.form
+        # new_user = User(
+                # username = form['username'] ,
+                # password = form['password'],
+                # email = form['email'],
+        # )
+        # db.session.add(new_user)
+        # db.session.commit()
 
-        flash("Registered. Please Login")
-        return redirect(url_for('login'))
-    else:
-        if session:
-            flash("You're already registred")
-            return redirect(url_for('index'))
-        else:
-            return render_template('register.html')
+        # flash("Registered. Please Login")
+        # return redirect(url_for('login'))
+    # else:
+        # if session.get('username',''):
+            # flash("You're already registred")
+            # return redirect(url_for('index'))
+        # else:
+            # return render_template('register.html')
 
 @app.route('/users/')
 @login_admin_required
