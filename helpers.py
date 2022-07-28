@@ -40,8 +40,11 @@ def login_admin_required(f):
     """
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        if session.get("username") is None:
+            flash('Please login as admin', 'warning')
+            return redirect("/login")
         if User.query.get(session.get("user_id")).group !=  'admin':
-            flash('only admin')
+            flash('only admin', 'warning')
             return redirect(url_for('index'))
         return f(*args, **kwargs)
     return decorated_function
