@@ -75,11 +75,10 @@ def register():
     print(request.method)
     print(form.validate_on_submit())
     if form.validate_on_submit():
-        form_request = request.form
         new_user = User(
-                username = form_request['username'] ,
-                password = form_request['password'],
-                email = form_request['email'],
+                username = form.username.data ,
+                password = form.password.data,
+                email = form.email.data,
         )
         db.session.add(new_user)
         db.session.commit()
