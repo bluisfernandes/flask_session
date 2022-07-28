@@ -45,22 +45,26 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if session.get('username', ''):
+    if session.get('user_id', ''):
         flash("You're already logged in", 'warning')
         return redirect(url_for('index'))
     form = LoginForm()
     print(request.form)
     if form.validate_on_submit():
-        session['username'] = request.form['email']
-        flash('ok', 'success')
-        return redirect(url_for('index'))
+        user = User.query.filter_by(email=form.email.data).first()
+        if user.password == form.password.data:
+            session['username'] = user.username
+            session['user_id'] = user.id
+            return redirect(url_for('index'))
+        flash('user and/or email not found', 'warning')
+        return redirect(url_for('login'))
     return render_template('login.html', form=form)
 
 
 @app.route('/logout/')
 def logout():
     # remove the username from the session if it's there
-    session.pop('username', None)
+    session.clear()
     return redirect(url_for('index'))
 
 
