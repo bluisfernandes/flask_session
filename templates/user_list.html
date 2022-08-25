@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+
+
+    <div class="table-responsive-sm"> 
+        <table class="table caption-top table-striped table-sm">
+            <caption>users</caption>
+            <thead>
+                <tr>
+                    <th >id</th>
+                    <th class="text-start">username</th>
+                    <th>group</th>
+                    <th>email</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td class="text-start">{{ user.username }}</td>
+                    <td>{{ user.group }}</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+            
+    
+            {% endfor %}
+            </tbody>
+            
+            <tfoot class="table-borderless">
+                <tr>
+                    <th class="text-end" scope="row" colspan="3">Total users</td>
+                    <th class="text-left" scope="row" class="table-active">{{ users|length  }}</td>
+                    
+                </tr>
+            </tfoot>
+    
+        </table>
+    </div>
+    
+    
+    
+    
+
+{% endblock %}

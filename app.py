@@ -4,12 +4,14 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 import os
 import secrets
+import requests
 from dotenv import load_dotenv
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 
 
 load_dotenv()
 
+api_uri = os.getenv('API_URI')
 
 # Make sure database URI is set
 if not os.environ.get('DATABASE_USER_URI'):
@@ -118,6 +120,36 @@ def password():
         return render_template('password.html')
 
 
+@app.route('/userlist', methods=['GET'])
+def list_users():
+    # categories = requests.get('http://localhost:5000/categories').json()
+    users = requests.get(f'{api_uri}/users').json()
+    # return categories
+    # return users
+    return render_template('user_list.html',
+            users=users['users']
+    )
+
+@app.route('/search', methods=['GET'])
+def list_searchs():
+    # categories = requests.get('http://localhost:5000/categories').json()
+    itens = requests.get(f'{api_uri}/search').json()
+    # return categories
+    return render_template('items.html',
+            itens=itens['searchs']
+    )
+
+
+@app.route('/category', methods=['GET'])
+def list_categories():
+    # categories = requests.get('http://localhost:5000/categories').json()
+    itens = requests.get(f'{api_uri}/categories').json()
+    # return categories
+    return render_template('items.html',
+            itens=itens['categories']
+    )
+
+
 def errorhandler(e):
     '''Handle error'''
     if not isinstance(e, HTTPException):
@@ -130,4 +162,4 @@ for code in default_exceptions:
     app.errorhandler(code)(errorhandler)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(port=5001)

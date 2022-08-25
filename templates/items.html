@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Itens
+{% endblock %}
+
+{% block main %}
+
+
+    <div class="table-responsive-sm"> 
+        <table class="table caption-top table-striped table-sm">
+            <caption>Itens</caption>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>item</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            {% for item  in itens %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.search }}</td>
+                    <td>{{ item.category }}</td>
+                </tr>
+            
+    
+            {% endfor %}
+            </tbody>
+            
+    
+        </table>
+    </div>
+
+{% endblock %}
