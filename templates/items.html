@@ -1,36 +1,43 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Itens
+  {{title}}
 {% endblock %}
 
 {% block main %}
 
 
-    <div class="table-responsive-sm"> 
-        <table class="table caption-top table-striped table-sm">
-            <caption>Itens</caption>
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>item</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            {% for item  in itens %}
-                <tr>
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.search }}</td>
-                    <td>{{ item.category }}</td>
-                </tr>
-            
-    
-            {% endfor %}
-            </tbody>
-            
-    
-        </table>
-    </div>
+<form class="row g-3" action='/category2' method='post'>
+  <ul class="list-group">
+    {%for item in itens %}
+    <li class="list-group-item">
+      {% if delete is true %}
+      <input class="form-check-input me-1" type="checkbox" name={{ item.id }} value="" id={{ item.id }}>
+      {% endif %}
+      <label class="form-check-label stretched-link" for={{ item.id }}>{{ item.category }}</label>
+    </li>
+    {% endfor %}
+  </ul>
+      {% if delete is true %}
+  <div class="col-auto">
+    <button type="submit" class="btn btn-danger mb-3">Remove</button>
+  </div>
+      {% endif %}
+
+</form>
+
+<form class="row g-3" action='/category' method='post'>
+  <div class="col-auto">
+    <label for="insert_category" class="visually-hidden">Category</label>
+    <input type="text" name='category' class="form-control" id="insert_category" placeholder="New Category">
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary mb-3">Add Category</button>
+  </div>
+  <div class="col-auto">
+    <button type="submit" formaction='/category2' class="btn btn-danger mb-3">Remove</button>
+  </div>
+</form>
+
 
 {% endblock %}
