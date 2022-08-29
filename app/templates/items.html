@@ -14,7 +14,7 @@
       {% if delete is true %}
       <input class="form-check-input me-1" type="checkbox" name={{ item.id }} value="" id={{ item.id }}>
       {% endif %}
-      <label class="form-check-label stretched-link" for={{ item.id }}>{{ item.category }}</label>
+      <label class="form-check-label stretched-link" for={{ item.id }}>{{ item.category }}{{ item.search}}</label>
     </li>
     {% endfor %}
   </ul>

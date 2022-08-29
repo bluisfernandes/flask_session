@@ -130,15 +130,36 @@ def list_users():
             users=users['users']
     )
 
-@app.route('/search', methods=['GET'])
-def list_searchs():
-    # categories = requests.get('http://localhost:5000/categories').json()
-    itens = requests.get(f'{api_uri}/search').json()
-    # return categories
-    return render_template('items.html',
-            itens=itens['searchs']
-    )
 
+@app.route('/search/remove', methods=['POST'])
+@app.route('/search', methods=['GET', 'POST'])
+def list_searchs():
+    if request.method == 'POST':
+        to_remove = list(request.form.to_dict().keys())
+        if '/remove' in request.url:
+            if '_method' in to_remove:
+                for search_id in to_remove:
+                    requests.delete(f'{api_uri}/search/{search_id}')
+                return redirect(url_for('list_searchs'))
+            else:
+                itens = requests.get(f'{api_uri}/search').json()
+                return render_template('items.html',
+                    itens=itens['searchs'],
+                    delete=True,
+                    title='search'
+                )
+
+        elif (search := request.form.get("search")) != "":
+            requests.post(f'{api_uri}/search', json={"search":search})
+        return redirect(url_for('list_searchs'))
+
+    else:
+        itens = requests.get(f'{api_uri}/search').json()
+        return render_template('items.html',
+             itens=itens['searchs'],
+             delete=False,
+             title='search'
+        )
 
 @app.route('/category/remove', methods=['POST'])
 @app.route('/category', methods=['GET', 'POST'])
