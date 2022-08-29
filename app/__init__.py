@@ -36,8 +36,8 @@ class User(db.Model):
     group = db.Column(db.String(10), nullable=False, default='user')
     email = db.Column(db.String(40), nullable=False)
 
-from forms import LoginForm, RegisterForm
-from helpers import apology, login_required, login_admin_required, usd
+from .forms import LoginForm, RegisterForm
+from .helpers import apology, login_required, login_admin_required, usd
 
 app.jinja_env.filters["usd"] = usd
 
