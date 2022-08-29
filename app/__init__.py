@@ -140,40 +140,35 @@ def list_searchs():
     )
 
 
+@app.route('/category/remove', methods=['POST'])
 @app.route('/category', methods=['GET', 'POST'])
 def list_categories():
     if request.method == 'POST':
-        flash('Accepted POST')
-        category = {'category':request.form.get("category")}
-        requests.post(f'{api_uri}/category', json=category)
+        to_remove = list(request.form.to_dict().keys())
+        if '/remove' in request.url:
+            if '_method' in to_remove:
+                for category_id in to_remove:
+                    requests.delete(f'{api_uri}/category/{category_id}')
+                return redirect(url_for('list_categories'))
+            else:
+                itens = requests.get(f'{api_uri}/category').json()
+                return render_template('items.html',
+                    itens=itens['categories'],
+                    delete=True,
+                    title='category'
+                )
+
+        elif (categ := request.form.get("category")) != "":
+            requests.post(f'{api_uri}/category', json={"category":categ})
         return redirect(url_for('list_categories'))
-    elif request.method == 'DELETE':
-        flash('Accepted DELETE', 'warning')
+
     else:
-        # categories = requests.get('http://localhost:5000/categories').json()
-        itens = requests.get(f'{api_uri}/categories').json()
-        # return categories
+        itens = requests.get(f'{api_uri}/category').json()
         return render_template('items.html',
              itens=itens['categories'],
              delete=False,
              title='category'
         )
-
-
-@app.route('/category2', methods=['POST'])
-def list_categories2():
-    to_remove = list(request.form.to_dict().keys())
-    print(to_remove, 'here')
-    for category_id in to_remove:
-        requests.delete(f'{api_uri}/category/{category_id}')
-    # breakpoint()
-
-    itens = requests.get(f'{api_uri}/categories').json()
-    return render_template('items.html',
-            itens=itens['categories'],
-            delete=True,
-            title='category'
-    )
 
 
 def errorhandler(e):

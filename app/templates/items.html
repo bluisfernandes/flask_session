@@ -7,7 +7,7 @@
 {% block main %}
 
 
-<form class="row g-3" action='/category2' method='post'>
+<form class="row g-3" action='/{{title}}/remove' method='post'>
   <ul class="list-group">
     {%for item in itens %}
     <li class="list-group-item">
@@ -20,23 +20,30 @@
   </ul>
       {% if delete is true %}
   <div class="col-auto">
+    <input class="form-check-input me-1" type="hidden" name="_method" value="remove">
     <button type="submit" class="btn btn-danger mb-3">Remove</button>
   </div>
       {% endif %}
 
 </form>
 
-<form class="row g-3" action='/category' method='post'>
+<form class="row g-3" action='/{{title}}' method='post'>
   <div class="col-auto">
-    <label for="insert_category" class="visually-hidden">Category</label>
-    <input type="text" name='category' class="form-control" id="insert_category" placeholder="New Category">
+    <label for="insert_{{title}}" class="visually-hidden">{{title}}</label>
+      {% if delete is true %}
+      <input type="text" disabled name='{{title}}' class="form-control" id="insert_{{title}}" placeholder="New {{title}}">
+      {% else %}
+      <input type="text" autofocus name='{{title}}' class="form-control" id="insert_{{title}}" placeholder="New {{title}}">
+      {% endif %}
   </div>
   <div class="col-auto">
-    <button type="submit" class="btn btn-primary mb-3">Add Category</button>
+    <button type="submit" class="btn btn-primary mb-3">Add {{title}}</button>
   </div>
+      {% if delete is false %}
   <div class="col-auto">
-    <button type="submit" formaction='/category2' class="btn btn-danger mb-3">Remove</button>
+    <button type="submit" formaction='/{{title}}/remove' class="btn btn-danger mb-3">Remove</button>
   </div>
+      {% endif %}
 </form>
 
 
