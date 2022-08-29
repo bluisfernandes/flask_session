@@ -78,13 +78,12 @@ def register():
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        new_user = User(
-                username = form.username.data ,
-                password = hashed_pw,
-                email = form.email.data,
-        )
-        db.session.add(new_user)
-        db.session.commit()
+        new_user = {
+                'username': form.username.data ,
+                'password': hashed_pw,
+                'email': form.email.data,
+                }
+        requests.post(f'{api_uri}/user', json=new_user)
         flash(f'Registred as {form.username.data}. Please login.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
