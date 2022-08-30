@@ -1,6 +1,4 @@
 from flask import Flask, session, request, url_for, redirect, render_template, flash
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 import os
 import secrets
@@ -11,6 +9,9 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 
 load_dotenv()
 
+if not os.environ.get('API_URI'):
+    raise RuntimeError("API_URI not set")
+
 api_uri = os.getenv('API_URI')
 
 # Make sure database URI is set
@@ -20,28 +21,13 @@ if not os.environ.get('DATABASE_USER_URI'):
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', secrets.token_urlsafe())
- # Custom filter
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_USER_URI')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable=False, unique=True)
-    password = db.Column(db.String(60), nullable=False)
-    group = db.Column(db.String(10), nullable=False, default='user')
-    email = db.Column(db.String(40), nullable=False)
-
 from .forms import LoginForm, RegisterForm
-from .helpers import apology, login_required, login_admin_required, usd
-
-app.jinja_env.filters["usd"] = usd
-
-migrate = Migrate(app, db)
+from .helpers import apology, login_required, login_admin_required
 
 
 @app.route('/')
