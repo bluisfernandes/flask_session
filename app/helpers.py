@@ -1,6 +1,7 @@
-from app import User
+from app import api_uri
 from flask import redirect, render_template, session, flash, url_for
 from functools import wraps
+import requests
 
 
 def apology(message, code=400):
@@ -43,7 +44,8 @@ def login_admin_required(f):
         if session.get("username") is None:
             flash('Please login as admin', 'warning')
             return redirect("/login")
-        if User.query.get(session.get("user_id")).group !=  'admin':
+        user_group = requests.get(f'{api_uri}/users', params={"id":session.get("user_id")}).json()['users'][0]['group']
+        if user_group !=  'admin':
             flash('only admin', 'warning')
             return redirect(url_for('index'))
         return f(*args, **kwargs)

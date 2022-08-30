@@ -56,10 +56,10 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
-            session['username'] = user.username
-            session['user_id'] = user.id 
+        user = requests.get(f'{api_uri}/users', params={"email":form.email.data}).json()['users'][0]
+        if user and bcrypt.check_password_hash(user['password'], form.password.data):
+            session['username'] = user['username']
+            session['user_id'] = user['id'] 
             return redirect(url_for('index'))
         flash('user and/or email not found', 'warning')
         return redirect(url_for('login'))
@@ -92,21 +92,22 @@ def register():
 @app.route('/users/')
 @login_admin_required
 def users():
+    users = requests.get(f'{api_uri}/users').json()
     return render_template('users.html',
-            users=User.query.order_by(User.id).limit(20).all()
+            users=users['users']
     )
 
 @app.route('/account')
 @login_required
 def account():
-    user = User.query.filter_by(username = session['username']).all()
-    return render_template('users.html', users=user)
+    user = requests.get(f'{api_uri}/users', params={"username":session['username']}).json()
+    return render_template('users.html', users=user['users'])
 
 
 @app.route('/routes/')
 def routes():
     # Show a list of site routs
-    links = [link.rule for link in app.url_map.iter_rules()]
+    links = [link.rule for link in app.url_map.iter_rules() if "GET" in link.methods]
     return render_template('routes.html', links=sorted(links))
 
 @app.route('/password/', methods=['POST', 'GET'])
@@ -121,10 +122,7 @@ def password():
 
 @app.route('/userlist', methods=['GET'])
 def list_users():
-    # categories = requests.get('http://localhost:5000/categories').json()
     users = requests.get(f'{api_uri}/users').json()
-    # return categories
-    # return users
     return render_template('user_list.html',
             users=users['users']
     )

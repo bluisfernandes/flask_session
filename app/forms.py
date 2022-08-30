@@ -1,7 +1,8 @@
-from app import User
+from app import api_uri
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, EmailField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+import requests
 
 class RegisterForm(FlaskForm):
     username = StringField('username', validators=[DataRequired(), Length(min=4, max=20)])
@@ -11,12 +12,12 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Register')
 
     def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
+        user = requests.get(f'{api_uri}/users', params={"username":username.data}).json()['users']
         if user:
             raise ValidationError('username already in use')
 
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        user = requests.get(f'{api_uri}/users', params={"email":email.data}).json()['users']
         if user:
             raise ValidationError('email already in use')
 
