@@ -116,14 +116,14 @@ def list_users():
 
 @app.route('/search/remove', methods=['POST'])
 @app.route('/search', methods=['GET', 'POST'])
-def list_searchs():
+def search():
     if request.method == 'POST':
         to_remove = list(request.form.to_dict().keys())
         if '/remove' in request.url:
             if '_method' in to_remove:
                 for search_id in to_remove:
                     requests.delete(f'{api_uri}/search/{search_id}')
-                return redirect(url_for('list_searchs'))
+                return redirect(url_for('search'))
             else:
                 itens = requests.get(f'{api_uri}/search').json()
                 return render_template('items.html',
@@ -134,7 +134,7 @@ def list_searchs():
 
         elif (search := request.form.get("search")) != "":
             requests.post(f'{api_uri}/search', json={"search":search})
-        return redirect(url_for('list_searchs'))
+        return redirect(url_for('search'))
 
     else:
         itens = requests.get(f'{api_uri}/search').json()
@@ -146,14 +146,14 @@ def list_searchs():
 
 @app.route('/category/remove', methods=['POST'])
 @app.route('/category', methods=['GET', 'POST'])
-def list_categories():
+def category():
     if request.method == 'POST':
         to_remove = list(request.form.to_dict().keys())
         if '/remove' in request.url:
             if '_method' in to_remove:
                 for category_id in to_remove:
                     requests.delete(f'{api_uri}/category/{category_id}')
-                return redirect(url_for('list_categories'))
+                return redirect(url_for('category'))
             else:
                 itens = requests.get(f'{api_uri}/category').json()
                 return render_template('items.html',
@@ -164,7 +164,7 @@ def list_categories():
 
         elif (categ := request.form.get("category")) != "":
             requests.post(f'{api_uri}/category', json={"category":categ})
-        return redirect(url_for('list_categories'))
+        return redirect(url_for('category'))
 
     else:
         itens = requests.get(f'{api_uri}/category').json()
