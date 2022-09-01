@@ -123,7 +123,7 @@ def list_users():
 
 @app.route('/mongo/logs')
 @login_required
-def mongo_log():
+def mongo_logs():
     logs = requests.get(f'{api_uri}/mongo/logs').json()
     return render_template('mongologs.html', logs=logs['logs'])
 
