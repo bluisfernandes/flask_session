@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  {{ title }}
+{% endblock %}
+
+{% block main %}
+
+    {% if session.username is defined %}
+
+    <div class="table-responsive-sm"> 
+        <table class="table caption-top table-striped table-sm">
+            <caption>Mongo Logs</caption>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>start time</th>
+                    <th>finish reason</th>
+                    <th>scraped count</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+            {% for log in logs %}
+                <tr>
+                    <td>{{ log._id['$oid'] }}</td>
+                    <td>{{ log.start_time['$date'] }}</td>
+                    <td>{{ log.finish_reason }}</td>
+                    <td>{{ log.item_scraped_count }}</td>
+                </tr>
+            
+    
+            {% endfor %}
+            </tbody>
+            
+            <tfoot class="table-borderless">
+                <tr>
+                    <th class="text-end" scope="row" colspan="4">Total logs</td>
+                    <th class="text-left" scope="row" class="table-active">{{ logs|length  }}</td>
+                    
+                </tr>
+            </tfoot>
+    
+        </table>
+    </div>
+    
+    
+    {% else %}
+        <h5>Please <a href="/login">Login in</a></h5>
+    {% endif %}
+    
+    
+    
+
+{% endblock %}

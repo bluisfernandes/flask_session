@@ -124,9 +124,8 @@ def list_users():
 @app.route('/mongo/logs')
 @login_required
 def mongo_log():
-    logs = requests.get(f'{api_uri}/mongo/log').json()
-    return logs
-    # return render_template('logs.html', logs=user['users'])
+    logs = requests.get(f'{api_uri}/mongo/logs').json()
+    return render_template('mongologs.html', logs=logs['logs'])
 
 @app.route('/search/remove', methods=['POST'])
 @app.route('/search', methods=['GET', 'POST'])
