@@ -114,6 +114,7 @@ def password():
 
 
 @app.route('/userlist', methods=['GET'])
+@login_admin_required
 def list_users():
     users = requests.get(f'{api_uri}/users').json()
     return render_template('user_list.html',
@@ -123,6 +124,7 @@ def list_users():
 
 @app.route('/search/remove', methods=['POST'])
 @app.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
     if request.method == 'POST':
         to_remove = list(request.form.to_dict().keys())
@@ -153,6 +155,7 @@ def search():
 
 @app.route('/category/remove', methods=['POST'])
 @app.route('/category', methods=['GET', 'POST'])
+@login_required
 def category():
     if request.method == 'POST':
         to_remove = list(request.form.to_dict().keys())
