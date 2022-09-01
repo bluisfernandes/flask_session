@@ -9,14 +9,11 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 
 load_dotenv()
 
+# Make sure database URI is set
 if not os.environ.get('API_URI'):
     raise RuntimeError("API_URI not set")
 
 api_uri = os.getenv('API_URI')
-
-# Make sure database URI is set
-if not os.environ.get('DATABASE_USER_URI'):
-    raise RuntimeError("DATABASE_USER_URI not set")
 
 
 app = Flask(__name__)
@@ -26,7 +23,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 bcrypt = Bcrypt(app)
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, PasswordForm
 from .helpers import apology, login_required, login_admin_required
 
 
@@ -42,7 +39,8 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = requests.get(f'{api_uri}/users', params={"email":form.email.data}).json()['users'][0]
+        if (user := requests.get(f'{api_uri}/users', params={"email":form.email.data}).json()['users']):
+            user = user[0]
         if user and bcrypt.check_password_hash(user['password'], form.password.data):
             session['username'] = user['username']
             session['user_id'] = user['id'] 
@@ -97,17 +95,26 @@ def routes():
     links = [link.rule for link in app.url_map.iter_rules() if "GET" in link.methods]
     return render_template('routes.html', links=sorted(links))
 
-@app.route('/password/', methods=['POST', 'GET'])
-@login_required
+@app.route('/password', methods=['POST', 'GET'])
+@login_admin_required
 def password():
-    if request.method == 'POST':
-        flash('Change password. TODO')
+    form = PasswordForm()
+    if form.validate_on_submit():
+        email = {"email": form.email.data}
+        user_id = requests.get(f'{api_uri}/users', params=email).json()["users"][0]["id"]
+        hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        update_password = {
+                'password': hashed_pw
+                }
+        requests.put(f'{api_uri}/user/{user_id}', json=update_password)
+        flash('Password changed')
         return redirect(url_for('index'))
     else:
-        return render_template('password.html')
+        return render_template('password.html', form=form)
 
 
 @app.route('/userlist', methods=['GET'])
+@login_admin_required
 def list_users():
     users = requests.get(f'{api_uri}/users').json()
     return render_template('user_list.html',
@@ -123,6 +130,7 @@ def mongo_log():
 
 @app.route('/search/remove', methods=['POST'])
 @app.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
     if request.method == 'POST':
         to_remove = list(request.form.to_dict().keys())
@@ -153,6 +161,7 @@ def search():
 
 @app.route('/category/remove', methods=['POST'])
 @app.route('/category', methods=['GET', 'POST'])
+@login_required
 def category():
     if request.method == 'POST':
         to_remove = list(request.form.to_dict().keys())
