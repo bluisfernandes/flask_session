@@ -24,8 +24,10 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 bcrypt = Bcrypt(app)
 
 from .forms import LoginForm, RegisterForm, PasswordForm
-from .helpers import apology, login_required, login_admin_required
+from .helpers import apology, login_required, login_admin_required, thousands
 
+# Custom filter
+app.jinja_env.filters["thousands"] = thousands
 
 @app.route('/')
 def index():

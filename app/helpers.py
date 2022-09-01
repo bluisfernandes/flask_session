@@ -55,3 +55,8 @@ def login_admin_required(f):
 def usd(value):
     """Format value as USD."""
     return f"${value:,.2f}"
+
+def thousands(value):
+    """Format value with . on thousands"""
+    text = f"{value:,}"
+    return f'{text.replace(",",".")}'

@@ -29,7 +29,7 @@
                     <td>{{ log._id['$oid'] }}</td>
                     <td>{{ log.start_time['$date'] }}</td>
                     <td>{{ log.finish_reason }}</td>
-                    <td>{{ log.item_scraped_count }}</td>
+                    <td>{{ log.item_scraped_count | thousands }}</td>
                     <td>{{ log['log_count/ERROR'] }}</td>
                     <td>{{ log['log_count/INFO'] }}</td>
                     <td>{{ log.request_depth_max }}</td>
