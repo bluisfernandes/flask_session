@@ -76,9 +76,10 @@ def register():
 @app.route('/users/')
 @login_admin_required
 def users():
-    users = requests.get(f'{api_uri}/users').json()
+    users = requests.get(f'{api_uri}/users').json()["users"]
+    sorted_users = sorted(users, key= lambda d: d['id'])
     return render_template('users.html',
-            users=users['users']
+            users=sorted_users
     )
 
 @app.route('/account')
