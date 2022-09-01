@@ -27,3 +27,14 @@ class LoginForm(FlaskForm):
     remember = BooleanField('remember Me')
     submit = SubmitField('Login')
 
+
+class PasswordForm(FlaskForm):
+    email = EmailField('email', validators=[DataRequired(), Email()])
+    password = PasswordField('password', validators=[DataRequired()])
+    conf_password = PasswordField('confirm password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Change')
+
+    def validate_email(self, email):
+        user = requests.get(f'{api_uri}/users', params={"email":email.data}).json()['users']
+        if not user:
+            raise ValidationError('email not found')

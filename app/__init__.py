@@ -23,7 +23,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 bcrypt = Bcrypt(app)
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, PasswordForm
 from .helpers import apology, login_required, login_admin_required
 
 
@@ -94,14 +94,22 @@ def routes():
     links = [link.rule for link in app.url_map.iter_rules() if "GET" in link.methods]
     return render_template('routes.html', links=sorted(links))
 
-@app.route('/password/', methods=['POST', 'GET'])
-@login_required
+@app.route('/password', methods=['POST', 'GET'])
+@login_admin_required
 def password():
-    if request.method == 'POST':
-        flash('Change password. TODO')
+    form = PasswordForm()
+    if form.validate_on_submit():
+        email = {"email": form.email.data}
+        user_id = requests.get(f'{api_uri}/users', params=email).json()["users"][0]["id"]
+        hashed_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        update_password = {
+                'password': hashed_pw
+                }
+        requests.put(f'{api_uri}/user/{user_id}', json=update_password)
+        flash('Password changed')
         return redirect(url_for('index'))
     else:
-        return render_template('password.html')
+        return render_template('password.html', form=form)
 
 
 @app.route('/userlist', methods=['GET'])
