@@ -9,14 +9,11 @@ from werkzeug.exceptions import default_exceptions, HTTPException, InternalServe
 
 load_dotenv()
 
+# Make sure database URI is set
 if not os.environ.get('API_URI'):
     raise RuntimeError("API_URI not set")
 
 api_uri = os.getenv('API_URI')
-
-# Make sure database URI is set
-if not os.environ.get('DATABASE_USER_URI'):
-    raise RuntimeError("DATABASE_USER_URI not set")
 
 
 app = Flask(__name__)
@@ -42,7 +39,8 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = requests.get(f'{api_uri}/users', params={"email":form.email.data}).json()['users'][0]
+        if (user := requests.get(f'{api_uri}/users', params={"email":form.email.data}).json()['users']):
+            user = user[0]
         if user and bcrypt.check_password_hash(user['password'], form.password.data):
             session['username'] = user['username']
             session['user_id'] = user['id'] 
